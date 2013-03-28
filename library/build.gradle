@@ -1,0 +1,55 @@
+ext._allProjects = rootProject.getChildProjects()
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.3'
+    }
+}
+
+apply plugin: 'android-library'
+
+android {
+    compileSdkVersion 17
+    
+    defaultConfig {
+    }
+    
+    dependencies {
+        // This dependency is not really necessary, but if both this one and
+        // ActionBarSherlock are included as library projects in another project, 
+        // then resource generation gets messed up. This (unnecessary) dependency
+        // seems to fix that.
+        compile _allProjects["ActionBarSherlock/library"]
+    }
+
+    sourceSets {
+        main {
+            manifest {
+                srcFile 'AndroidManifest.xml'
+            }
+            java {
+                srcDir 'src'
+            }
+            res {
+                srcDir 'res'
+            }
+            assets {
+                srcDir 'assets'
+            }
+            resources {
+                srcDir 'src'
+            }
+            aidl { 
+                srcDir 'src'
+            }
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: rootProject.projectDir.path+'/libs', includes: ['android-support-v4.jar'])
+}
