@@ -34,6 +34,7 @@ proguard-project.txt
 tmp
 /library/libs/*.jar
 /library/*.jar
+/library/project.properties
 
 #Gradle
 /library/.gradle
