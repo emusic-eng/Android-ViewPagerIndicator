@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.3'
+        classpath 'com.android.tools.build:gradle:0.5.+'
     }
 }
 
@@ -14,16 +14,12 @@ apply plugin: 'android-library'
 
 android {
     compileSdkVersion 17
-    
+    buildToolsVersion "17.0.0"
+
     defaultConfig {
     }
     
     dependencies {
-        // This dependency is not really necessary, but if both this one and
-        // ActionBarSherlock are included as library projects in another project, 
-        // then resource generation gets messed up. This (unnecessary) dependency
-        // seems to fix that.
-        compile _allProjects["ActionBarSherlock/library"]
     }
 
     sourceSets {
@@ -51,5 +47,5 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: rootProject.projectDir.path+'/libs', includes: ['android-support-v4.jar'])
+    compile 'com.android.support:support-v4:13.0.0'
 }
