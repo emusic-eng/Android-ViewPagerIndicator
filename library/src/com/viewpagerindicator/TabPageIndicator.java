@@ -17,6 +17,7 @@
 package com.viewpagerindicator;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -244,16 +245,19 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         announceCurrentTab();
     }
 
-    private void announceCurrentTab() {
+    public void announceCurrentTab() {
         if (mAccessibilityManager.isEnabled()) {
-            Class theClass = getClass();
-            AccessibilityEvent e = AccessibilityEvent.obtain();
-            e.setEventType(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
-            e.setSource(TabPageIndicator.this);
-            e.setClassName(theClass.getName());
-            e.setEnabled(true);
-            e.setPackageName(theClass.getPackage().getName());
-            sendAccessibilityEventUnchecked(e);
+            Rect rect = new Rect();
+            if (getGlobalVisibleRect(rect)) {
+                Class theClass = getClass();
+                AccessibilityEvent e = AccessibilityEvent.obtain();
+                e.setEventType(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+                e.setSource(TabPageIndicator.this);
+                e.setClassName(theClass.getName());
+                e.setEnabled(true);
+                e.setPackageName(theClass.getPackage().getName());
+                sendAccessibilityEventUnchecked(e);
+            }
         }
     }
 
@@ -261,9 +265,12 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         super.dispatchPopulateAccessibilityEvent(event);
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            event.getText().clear();
-            CharSequence tabName = mTabLayout.getChildAt(mViewPager.getCurrentItem()).getContentDescription();
-            event.getText().add(getContext().getString(R.string.showing_tab, tabName));
+            Rect rect = new Rect();
+            if (getGlobalVisibleRect(rect)) {
+                event.getText().clear();
+                CharSequence tabName = mTabLayout.getChildAt(mViewPager.getCurrentItem()).getContentDescription();
+                event.getText().add(getContext().getString(R.string.showing_tab, tabName));
+            }
         }
         return true;
     }
