@@ -18,6 +18,7 @@ package com.viewpagerindicator;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -61,6 +62,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         }
     };
     private AccessibilityManager mAccessibilityManager;
+    private Integer mCurrentTab = null;
 
     public TabPageIndicator(Context context) {
         this(context, null);
@@ -230,6 +232,10 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         if (mViewPager == null) {
             throw new IllegalStateException("ViewPager has not been bound.");
         }
+        if (mCurrentTab != null && item == mCurrentTab) {
+            return;
+        }
+        mCurrentTab = item;
         mSelectedTabIndex = item;
         mViewPager.setCurrentItem(item);
 
@@ -256,6 +262,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
                 e.setClassName(theClass.getName());
                 e.setEnabled(true);
                 e.setPackageName(theClass.getPackage().getName());
+                e.setParcelableData(new Bundle());
                 sendAccessibilityEventUnchecked(e);
             }
         }
@@ -264,7 +271,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
         super.dispatchPopulateAccessibilityEvent(event);
-        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && event.getParcelableData() instanceof Bundle) {
             Rect rect = new Rect();
             if (getGlobalVisibleRect(rect)) {
                 event.getText().clear();
