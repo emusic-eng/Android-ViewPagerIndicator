@@ -44,6 +44,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
      */
     private static final CharSequence EMPTY_TITLE = "";
     private final IcsLinearLayout mTabLayout;
+    TabView lastAnnounced = null;
     private Runnable mTabSelector;
     private ViewPager mViewPager;
     private ViewPager.OnPageChangeListener mListener;
@@ -152,6 +153,15 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         }
 
         mTabLayout.addView(tabView, new LinearLayout.LayoutParams(0, MATCH_PARENT, 1));
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        if (lastAnnounced == null && getGlobalVisibleRect(new Rect())) {
+            // first real layout, announce first tab.
+            announceCurrentTab();
+        }
     }
 
     @Override
@@ -275,7 +285,10 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
             if (getGlobalVisibleRect(rect)) {
                 event.getText().clear();
                 TabView currentTab = (TabView) mTabLayout.getChildAt(mViewPager.getCurrentItem());
-                event.getText().add(getContext().getString(R.string.showing_tab, currentTab.getText()));
+                if (currentTab != lastAnnounced) {
+                    lastAnnounced = currentTab;
+                    event.getText().add(getContext().getString(R.string.showing_tab, currentTab.getText()));
+                }
             }
         }
         return true;
