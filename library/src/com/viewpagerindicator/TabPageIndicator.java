@@ -287,7 +287,7 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
                 TabView currentTab = (TabView) mTabLayout.getChildAt(mViewPager.getCurrentItem());
                 if (currentTab != lastAnnounced) {
                     lastAnnounced = currentTab;
-                    event.getText().add(getContext().getString(R.string.showing_tab, currentTab.getText()));
+                    event.getText().add(currentTab.getSelectedText());
                 }
             }
         }
@@ -333,13 +333,25 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
             return mIndex;
         }
 
+        public CharSequence getSelectedText() {
+            return getContext().getString(R.string.showing_tab, getAccessibilityText());
+        }
+
+        private CharSequence getAccessibilityText() {
+            CharSequence text = super.getContentDescription();
+            if (text == null) {
+                text = getText();
+            }
+            return text;
+        }
+
         @Override
         public CharSequence getContentDescription() {
             Context context = getContext();
             if (isSelected()) {
-                return context.getString(R.string.tab_selected, getText());
+                return context.getString(R.string.tab_selected, getAccessibilityText());
             } else {
-                return context.getString(R.string.tab_desc, getText());
+                return context.getString(R.string.tab_desc, getAccessibilityText());
             }
         }
     }
