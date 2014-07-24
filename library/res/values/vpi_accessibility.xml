@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tab_desc">%1$s Tab</string>
-    <string name="showing_tab">Showing %1$s</string>
+    <string name="tab_selected">%1$s Tab, Selected</string>
+    <string name="showing_tab">Showing %1$s Tab</string>
 </resources>

@@ -146,7 +146,6 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         tabView.setFocusable(true);
         tabView.setOnClickListener(mTabClickListener);
         tabView.setText(text);
-        tabView.setContentDescription(context.getString(R.string.tab_desc, text));
 
         if (iconResId != 0) {
             tabView.setCompoundDrawablesWithIntrinsicBounds(iconResId, 0, 0, 0);
@@ -275,8 +274,8 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
             Rect rect = new Rect();
             if (getGlobalVisibleRect(rect)) {
                 event.getText().clear();
-                CharSequence tabName = mTabLayout.getChildAt(mViewPager.getCurrentItem()).getContentDescription();
-                event.getText().add(getContext().getString(R.string.showing_tab, tabName));
+                TabView currentTab = (TabView) mTabLayout.getChildAt(mViewPager.getCurrentItem());
+                event.getText().add(getContext().getString(R.string.showing_tab, currentTab.getText()));
             }
         }
         return true;
@@ -319,6 +318,16 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 
         public int getIndex() {
             return mIndex;
+        }
+
+        @Override
+        public CharSequence getContentDescription() {
+            Context context = getContext();
+            if (isSelected()) {
+                return context.getString(R.string.tab_selected, getText());
+            } else {
+                return context.getString(R.string.tab_desc, getText());
+            }
         }
     }
 }
